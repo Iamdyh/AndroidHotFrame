@@ -1,0 +1,22 @@
+ext {
+    android = [
+            compileSdkVersion   : 26,
+            buildToolsVersion   : '26.0.2',
+            applicationId       : 'com.dyh.androidhotframe',
+            minSdkVersion       : 15,
+            targetSdkVersion    : 26,
+            versionCode         : 1,
+            versionName         : 'v 1.1.0',
+            defaultPublishConfig: 'release',
+            publishNonDefault   : true
+    ]
+
+    dependencies = [
+            "appcompat-v7"      : 'com.android.support:appcompat-v7:26.0.0',
+            "support-design"    : 'com.android.support:design:+',
+            "junit"             : 'junit:junit:4.12',
+            "eventbus"          : 'org.greenrobot:eventbus:3.1.1',
+            "constraint-layout" : 'com.android.support.constraint:constraint-layout:1.1.3',
+
+    ]
+}
