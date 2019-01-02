@@ -20,4 +20,11 @@
         android:layout_height="wrap_content"
         android:text="SecondDemo"
         android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/id_third_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ThirdDemo"
+        android:textAllCaps="false"/>
 </LinearLayout>

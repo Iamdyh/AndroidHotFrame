@@ -10,6 +10,8 @@ import com.ftsafe.rxjavademo.BuildConfig;
 import com.ftsafe.rxjavademo.R;
 import com.ftsafe.rxjavademo.two.entity.LoginRequest;
 import com.ftsafe.rxjavademo.two.entity.LoginResponse;
+import com.ftsafe.rxjavademo.two.entity.RegisterRequest;
+import com.ftsafe.rxjavademo.two.entity.RegisterResponse;
 import com.ftsafe.rxjavademo.two.retrofit.Api;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -18,12 +20,14 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -89,49 +93,64 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     private void useRetrofitAndRxJava(){
-        Api api = retrofit.create(Api.class);
-        api.login(new LoginRequest())
-                .subscribeOn(Schedulers.io())                     //在io线程中进行网络请求
-                .observeOn(AndroidSchedulers.mainThread())        //回到主线程处理请求结果
-                .subscribe(new Observer<LoginResponse>() {
+        final Api api = retrofit.create(Api.class);
+//        api.login(new LoginRequest())
+//                .subscribeOn(Schedulers.io())                     //在io线程中进行网络请求
+//                .observeOn(AndroidSchedulers.mainThread())        //回到主线程处理请求结果
+//                .subscribe(new Observer<LoginResponse>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//                        cd = new CompositeDisposable();
+//                        cd.add(d);
+//                    }
+//
+//                    @Override
+//                    public void onNext(LoginResponse loginResponse) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.e(TAG, "登录失败");
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        Log.e(TAG, "登录成功");
+//                    }
+//                });
+//
+
+        //flatmap
+        api.register(new RegisterRequest())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<RegisterResponse>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        cd = new CompositeDisposable();
-                        cd.add(d);
+                    public void accept(RegisterResponse registerResponse) throws Exception {
+                        Log.e(TAG, "accept: 注册返回的结果");
                     }
-
+                })
+                .observeOn(Schedulers.io())                 //回到io线程去进行登录请求
+                .flatMap(new Function<RegisterResponse, ObservableSource<LoginResponse>>() {
                     @Override
-                    public void onNext(LoginResponse loginResponse) {
-
+                    public ObservableSource<LoginResponse> apply(RegisterResponse registerResponse) throws Exception {
+                        return api.login(new LoginRequest());
                     }
-
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<LoginResponse>() {
                     @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "登录失败");
+                    public void accept(LoginResponse loginResponse) throws Exception {
+                        Log.e(TAG, "accept: 登录成功");
                     }
-
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onComplete() {
-                        Log.e(TAG, "登录成功");
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e(TAG, "accept: 登录失败");
                     }
                 });
-
-
     }
 
-    private static Retrofit create(){
-        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
-        builder.readTimeout(10, TimeUnit.SECONDS);
-        builder.connectTimeout(9, TimeUnit.SECONDS);
-        if(BuildConfig.DEBUG){
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            builder.addInterceptor(interceptor);
-        }
-        return new Retrofit.Builder().baseUrl(ENDPOINT)
-                .client(builder.build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
-    }
+
 }
