@@ -1,4 +1,4 @@
-package com.ftsafe.rxjavademo;
+package com.dyh.rxjavademo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

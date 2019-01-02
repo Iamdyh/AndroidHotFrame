@@ -1,38 +1,28 @@
-package com.ftsafe.rxjavademo.two.ui;
+package com.dyh.rxjavademo.two.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ftsafe.rxjavademo.BuildConfig;
-import com.ftsafe.rxjavademo.R;
-import com.ftsafe.rxjavademo.two.entity.LoginRequest;
-import com.ftsafe.rxjavademo.two.entity.LoginResponse;
-import com.ftsafe.rxjavademo.two.entity.RegisterRequest;
-import com.ftsafe.rxjavademo.two.entity.RegisterResponse;
-import com.ftsafe.rxjavademo.two.retrofit.Api;
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
-import java.util.concurrent.TimeUnit;
+import com.dyh.rxjavademo.R;
+import com.dyh.rxjavademo.two.entity.LoginRequest;
+import com.dyh.rxjavademo.two.entity.LoginResponse;
+import com.dyh.rxjavademo.two.entity.RegisterRequest;
+import com.dyh.rxjavademo.two.entity.RegisterResponse;
+import com.dyh.rxjavademo.two.retrofit.Api;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class SecondActivity extends AppCompatActivity {

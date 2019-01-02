@@ -1,10 +1,10 @@
-package com.ftsafe.rxjavademo.two.retrofit;
+package com.dyh.rxjavademo.two.retrofit;
 
 
-import com.ftsafe.rxjavademo.two.entity.LoginRequest;
-import com.ftsafe.rxjavademo.two.entity.LoginResponse;
-import com.ftsafe.rxjavademo.two.entity.RegisterRequest;
-import com.ftsafe.rxjavademo.two.entity.RegisterResponse;
+import com.dyh.rxjavademo.two.entity.LoginRequest;
+import com.dyh.rxjavademo.two.entity.LoginResponse;
+import com.dyh.rxjavademo.two.entity.RegisterRequest;
+import com.dyh.rxjavademo.two.entity.RegisterResponse;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;

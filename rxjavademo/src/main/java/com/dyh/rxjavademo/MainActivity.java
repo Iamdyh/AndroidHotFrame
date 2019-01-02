@@ -1,11 +1,11 @@
-package com.ftsafe.rxjavademo;
+package com.dyh.rxjavademo;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.ftsafe.rxjavademo.two.ui.SecondActivity;
+import com.dyh.rxjavademo.two.ui.SecondActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +35,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, ThirdActivity.class));
+            }
+        });
+
+        findViewById(R.id.id_four_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, FourActivity.class));
             }
         });
 

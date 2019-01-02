@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ftsafe.rxjavademo">
+    package="com.dyh.rxjavademo">
 
     <application
         android:allowBackup="true"
@@ -9,16 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.dyh.rxjavademo.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FirstActivity" />
-        <activity android:name=".two.ui.SecondActivity" />
-        <activity android:name=".ThirdActivity"></activity>
+        <activity android:name="com.dyh.rxjavademo.FirstActivity" />
+        <activity android:name="com.dyh.rxjavademo.two.ui.SecondActivity" />
+        <activity android:name="com.dyh.rxjavademo.ThirdActivity" />
+        <activity android:name="com.dyh.rxjavademo.FourActivity"></activity>
     </application>
 
 </manifest>
