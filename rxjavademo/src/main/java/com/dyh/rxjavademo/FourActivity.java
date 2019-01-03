@@ -62,15 +62,25 @@ public class FourActivity extends AppCompatActivity {
         mBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userFlowableWithRequestInTwoThread();
+//                userFlowableWithRequestInTwoThread();
+
+                useFlowableRequest();
             }
         });
         mBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                request(1);
+//                request(1);
+
+                request(96);
             }
         });
+
+//        useBackpressureStrategyBUFFER();
+
+//        useFlowableInterval();
+
+//        useFlowableEmitter();
 
 
     }
@@ -374,4 +384,147 @@ public class FourActivity extends AppCompatActivity {
 
     }
 
+    private void useBackpressureStrategyBUFFER(){
+        Flowable.create(new FlowableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(FlowableEmitter<Integer> emitter) {
+                for(int i = 0; i < 1000; i++){
+                    emitter.onNext(i);
+                    Log.e(TAG, "emit: " + i);
+                }
+            }
+        }, BackpressureStrategy.BUFFER).subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+                Log.e(TAG, "onSubscribe: ");
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: " + integer);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete: ");
+            }
+        });
+    }
+
+    private void useFlowableInterval(){
+         Flowable.interval(1, TimeUnit.SECONDS)
+                 .onBackpressureDrop()                    //加上背压策略
+                 .observeOn(AndroidSchedulers.mainThread())
+                 .subscribe(new Subscriber<Long>() {
+                     @Override
+                     public void onSubscribe(Subscription s) {
+                         Log.e(TAG, "onSubscribe: ");
+                         mSubscription = s;
+                         s.request(Long.MAX_VALUE);
+                     }
+
+                     @Override
+                     public void onNext(Long aLong) {
+                         Log.e(TAG, "onNext: " + aLong);
+                         try {
+                             Thread.sleep(1000);
+                         }catch (Exception e){
+                             e.printStackTrace();
+                         }
+                     }
+
+                     @Override
+                     public void onError(Throwable t) {
+                         Log.e(TAG, "onError: " + t);
+                     }
+
+                     @Override
+                     public void onComplete() {
+                         Log.e(TAG, "onComplete: ");
+                     }
+                 });
+    }
+
+    private void useFlowableEmitter(){
+        Flowable.create(new FlowableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(FlowableEmitter<Integer> emitter) {
+                Log.e(TAG, "current requested: " + emitter.requested());
+            }
+        }, BackpressureStrategy.ERROR)
+        .subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+                Log.e(TAG, "onSubscribe: ");
+                mSubscription = s;
+                s.request(10);
+                s.request(100);
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: ");
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete: ");
+            }
+        });
+    }
+
+    private void useFlowableRequest(){
+        Flowable.create(new FlowableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(FlowableEmitter<Integer> emitter) throws Exception{
+                Log.e(TAG, "subscribe: ");
+                boolean flag;
+                for(int i = 0; ; i++){
+                    flag = false;
+                    while(emitter.requested() == 0){
+                        Log.e(TAG, "no, I can't emit value!");
+                        flag = true;
+                    }
+                    emitter.onNext(i);
+                    Log.e(TAG, "emit " + ", requested = " + emitter.requested());
+                }
+            }
+        }, BackpressureStrategy.ERROR)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+                Log.e(TAG, "onSubscribe: ");
+                mSubscription = s;
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: " + integer);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Log.e(TAG, "onError: " + t);
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete: ");
+            }
+        });
+    }
 }
